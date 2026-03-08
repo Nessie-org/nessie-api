@@ -1,0 +1,6 @@
+
+src/nessie_api/__pycache__/
+
+.idea/
+
+src/nessie_api/models/__pycache__/
