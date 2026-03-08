@@ -5,12 +5,13 @@ build-backend = "hatchling.build"
 [project]
 name = "nessie-api"
 version = "0.1.0"
-description = "Nessie API - A Python package for the Nessie REST API"
+description = "Nessie API - A Python package for the shared models and contracts"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.9"
 authors = [
-    { name = "Nessie Authors", email = "nessie-dev@example.com" },
+    { name = "Mihajlo Milojević", email = "milojevicm374@gmail.com" },
+    { name = "Stefan Ilić", email = "stefanilic3001@gmail.com" },
 ]
 keywords = ["nessie", "api", "data", "lakehouse"]
 classifiers = [
@@ -25,8 +26,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "httpx>=0.24.0",
-    "pydantic>=2.0.0",
 ]
 
 [project.optional-dependencies]
