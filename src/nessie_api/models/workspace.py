@@ -1,4 +1,4 @@
-from src.nessie_api.models import Graph, FilterExpression
+from nessie_api.models import Graph, FilterExpression
 
 
 class Workspace:

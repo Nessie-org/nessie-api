@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from enum import Enum
-from src.nessie_api.models import AttributeValue, Attribute
+from nessie_api.models import AttributeValue, Attribute
 
 
 class FilterOperator(Enum):
@@ -23,7 +23,9 @@ class FilterExpression:
         FilterExpression("Name", FilterOperator.EQ, "Alice")
     """
 
-    def __init__(self, attr_name: str, operator: FilterOperator, value: AttributeValue) -> None:
+    def __init__(
+        self, attr_name: str, operator: FilterOperator, value: AttributeValue
+    ) -> None:
         if not isinstance(value, Attribute.SUPPORTED_TYPES):
             raise TypeError(
                 f"Filter value must be one of supported types {Attribute.SUPPORTED_TYPES}, got {type(value)}."
@@ -35,13 +37,18 @@ class FilterExpression:
     @classmethod
     def from_string(cls, expression: str) -> "FilterExpression":
         import re
+
         pattern = r"^\s*(\w+)\s*(==|!=|<=|>=|<|>)\s*(.+)\s*$"
         match = re.match(pattern, expression)
         if not match:
             raise ValueError(
                 f"Illegal filter format: {expression!r}. Expected format: '<attr_name> <operator> <value>'"
             )
-        attr_name, op_str, raw_value = match.group(1), match.group(2), match.group(3).strip()
+        attr_name, op_str, raw_value = (
+            match.group(1),
+            match.group(2),
+            match.group(3).strip(),
+        )
         operator = FilterOperator(op_str)
         value = cls._coerce_value(raw_value)
         return cls(attr_name, operator, value)
@@ -64,7 +71,9 @@ class FilterExpression:
             raise TypeError("Input must be a JSON string or dictionary.")
 
         if not all(key in data for key in ("attr_name", "operator", "value")):
-            raise ValueError("JSON must contain 'attr_name', 'operator', and 'value' keys.")
+            raise ValueError(
+                "JSON must contain 'attr_name', 'operator', and 'value' keys."
+            )
 
         attr_name = data["attr_name"]
         operator = FilterOperator(data["operator"])
@@ -96,6 +105,7 @@ class FilterExpression:
     @staticmethod
     def _coerce_value(raw: str) -> AttributeValue:
         from datetime import date as date_type
+
         try:
             return int(raw)
         except ValueError:
@@ -111,4 +121,6 @@ class FilterExpression:
         return raw
 
     def __repr__(self) -> str:
-        return f"FilterExpression({self.attr_name!r} {self.operator.value} {self.value!r})"
+        return (
+            f"FilterExpression({self.attr_name!r} {self.operator.value} {self.value!r})"
+        )
