@@ -13,7 +13,6 @@ class Action:
 
 
 ActionHandlerMap = dict[str, Callable[[Action], Any]]
-PluginData = tuple[ActionHandlerMap, list[str]]
 
 
 class Plugin:
@@ -22,10 +21,14 @@ class Plugin:
         name: str,
         handlers: ActionHandlerMap,
         requires: list[str] = [],
+        setup_requires: dict[str, type] = {},
+        verbose: bool = False,
     ):
         self.name = name
         self.handlers = handlers
         self.requires = requires
+        self.setup_requires = setup_requires
+        self.verbose = verbose
 
     def activate(self):
         print(f"Activating plugin: {self.name}")
@@ -37,23 +40,36 @@ class Plugin:
     def provided_actions(self) -> list[str]:
         return list(self.handlers.keys())
 
-    def handle(self, action: Action) -> bool:
-        for action_name, handler in self.handlers.items():
-            if action_name == action.name:
+    def handle(self, action: Action, setup: dict[str, type] = None) -> Any:
+        handler = self.handlers.get(action.name)
+        if handler:
+            if self.verbose:
                 print(f"Handling action: {action.name} with plugin: {self.name}")
-                handler(action)
-                return True
-        return False
+            if setup:
+                if self.verbose:
+                    print(f"Using setup: {setup} for action: {action.name}")
+                return handler(action, setup)
+            else:
+                return handler(action)
 
 
-def plugin(name: str) -> Any:
+def plugin(name: str, verbose: bool = False) -> Any:
 
     def inner(
-        f: Callable[[], PluginData],
+        f: Callable[[], dict[str, Any]],
     ) -> Callable[[], Plugin]:
         def wrapper() -> Plugin:
-            handlers, requires = f()
-            return Plugin(name=name, handlers=handlers, requires=requires)
+            data = f()
+            handlers = data.get("handlers", {})
+            requires = data.get("requires", [])
+            setup_requires = data.get("setup_requires", {})
+            return Plugin(
+                name=name,
+                handlers=handlers,
+                requires=requires,
+                setup_requires=setup_requires,
+                verbose=verbose,
+            )
 
         return wrapper
 
