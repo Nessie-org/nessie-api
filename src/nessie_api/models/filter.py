@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from enum import Enum
-from src.nessie_api.models import AttributeValue, Attribute
+from nessie_api.models import AttributeValue, Attribute
 
 
 class FilterOperator(Enum):
