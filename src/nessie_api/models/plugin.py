@@ -5,7 +5,6 @@ class NoAvailablePluginError(Exception):
     pass
 
 
-# TODO : Intent is just a placeholder for now
 class Action:
     def __init__(self, name: str, payload: Any):
         self.name = name
@@ -40,7 +39,7 @@ class Plugin:
     def provided_actions(self) -> list[str]:
         return list(self.handlers.keys())
 
-    def handle(self, action: Action, setup: dict[str, type] = None) -> Any:
+    def handle(self, action: Action, setup: dict[str, Any] = None) -> Any:
         handler = self.handlers.get(action.name)
         if handler:
             if self.verbose:
