@@ -113,7 +113,9 @@ class Edge:
 
 class Graph:
 
-    def __init__(self, graph_type: GraphType = GraphType.DIRECTED) -> None:
+    def __init__(self, name: str, graph_type: GraphType = GraphType.DIRECTED) -> None:
+        self.name = name
+
         self.graph_type = graph_type
 
         self._nodes: dict[str, Node] = {}
@@ -236,6 +238,7 @@ class Graph:
 
     def to_dict(self) -> dict:
         return {
+            "name": self.name,
             "type": self.graph_type.value,
             "nodes": [
                 {
@@ -258,7 +261,7 @@ class Graph:
     @classmethod
     def from_dict(cls, data: dict) -> "Graph":
 
-        graph = cls(GraphType(data["type"]))
+        graph = cls(data["name"], GraphType(data["type"]))
 
         node_map: dict[str, Node] = {}
 
@@ -285,6 +288,6 @@ class Graph:
 
     def __repr__(self) -> str:
         return (
-            f"Graph(type={self.graph_type.value}, "
+            f"Graph(name={self.name}, type={self.graph_type.value}, "
             f"nodes={len(self._nodes)}, edges={len(self._edges)})"
         )
