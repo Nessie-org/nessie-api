@@ -37,13 +37,13 @@ class TestGraph(unittest.TestCase):
         self.graph.add_node(self.node2)
         self.graph.add_edge(self.edge)
         graph_dict = self.graph.to_dict()
-        self.assertEqual(graph_dict["id"], "test_graph")
+        self.assertEqual(graph_dict["name"], "test_graph")
         self.assertEqual(len(graph_dict["nodes"]), 2)
         self.assertEqual(len(graph_dict["edges"]), 1)
 
     def test_deserialization(self):
         graph_dict = {
-            "id": "test_graph",
+            "name": "test_graph",
             "type": "directed",
             "nodes": [
                 {"id": "n1", "attributes": {}},
@@ -54,7 +54,7 @@ class TestGraph(unittest.TestCase):
             ]
         }
         graph = Graph.from_dict(graph_dict)
-        self.assertEqual(graph.id, "test_graph")
+        self.assertEqual(graph.name, "test_graph")
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(len(graph.edges), 1)
 
