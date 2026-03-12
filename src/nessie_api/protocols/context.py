@@ -85,6 +85,13 @@ class Context(Protocol):
         """
         ...
 
+    def set_visualiser_at(self, index: int, visualiser_name: str) -> None:
+        """
+        Sets the visualiser plugin for the graph at *index* to *visualiser_name*.
+        Must be within ``[0, get_workspace_count())``.
+        """
+        ...
+
     ################## FILTERS ##################
 
     def get_active_filters_at(self, index: int) -> list:
