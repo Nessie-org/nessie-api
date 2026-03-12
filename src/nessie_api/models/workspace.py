@@ -1,4 +1,6 @@
-from nessie_api.models import Graph, FilterExpression
+from copy import deepcopy
+
+from nessie_api.models import ConsoleMessage, Graph, FilterExpression
 
 
 class Workspace:
@@ -8,13 +10,20 @@ class Workspace:
 
     def __init__(self, source_graph: Graph) -> None:
         self.source_graph = source_graph
+        self.current_graph = deepcopy(source_graph)
+        self.visualiser_name: str | None = None
         self._filters: list[FilterExpression] = []
+        self._console_messages: list[ConsoleMessage] = []
         self._undo_stack: list[list[FilterExpression]] = []
         self._redo_stack: list[list[FilterExpression]] = []
 
     @property
     def active_filters(self) -> list[FilterExpression]:
         return list(self._filters)
+    
+    @property
+    def console_messages(self) -> list[ConsoleMessage]:
+        return list(self._console_messages)
 
     def add_filter(self, operation: FilterExpression) -> None:
         self._undo_stack.append(self._filters.copy())
@@ -42,6 +51,12 @@ class Workspace:
         if self._redo_stack:
             self._undo_stack.append(self._filters.copy())
             self._filters = self._redo_stack.pop()
+
+    def add_console_message(self, message: ConsoleMessage) -> None:
+        self._console_messages.append(message)
+    
+    def clear_console_messages(self) -> None:
+        self._console_messages.clear()
 
     def __repr__(self) -> str:
         return f"Workspace(filters={self._filters})"
