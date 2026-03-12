@@ -1,5 +1,7 @@
 from __future__ import annotations
+from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 
 class ConsoleMessageType(Enum):
@@ -7,32 +9,50 @@ class ConsoleMessageType(Enum):
     OK    = "ok"
     WARN  = "warn"
     ERROR = "error"
+    INPUT = "input"  # clickable prompt — populates the console input field
 
 
 class ConsoleMessage:
     """
-    One line in console of the workspace.
-
-    Examples::
-
-        ConsoleMessage("Graph loaded successfully.", ConsoleMessageType.OK)
-        ConsoleMessage("Missing edge weights.", ConsoleMessageType.WARN)
-        ConsoleMessage("3 nodes filtered out.", ConsoleMessageType.INFO)
+    One console line of the workspace.
     """
 
-    def __init__(self, message: str, type: ConsoleMessageType = ConsoleMessageType.INFO) -> None:
-        if not isinstance(type, ConsoleMessageType):
-            raise TypeError(f"type must be ConsoleMessageType, got {type!r}")
-        self.message = message
-        self.type    = type
+    def __init__(
+        self,
+        message:   str,
+        type:      ConsoleMessageType = ConsoleMessageType.INFO,
+        timestamp: Optional[datetime] = None,
+    ) -> None:
+        self.message   = message
+        self.type      = type
+        self.timestamp = timestamp or datetime.now()
+
+    @classmethod
+    def input(cls, label: str) -> "ConsoleMessage":
+        return cls(message=label, type=ConsoleMessageType.INPUT)
+
+    @classmethod
+    def info(cls, label: str) -> "ConsoleMessage":
+        return cls(message=label, type=ConsoleMessageType.INFO)
+
+    @classmethod
+    def ok(cls, label: str) -> "ConsoleMessage":
+        return cls(message=label, type=ConsoleMessageType.OK)
+
+    @classmethod
+    def warn(cls, label: str) -> "ConsoleMessage":
+        return cls(message=label, type=ConsoleMessageType.WARN)
+
+    @classmethod
+    def error(cls, label: str) -> "ConsoleMessage":
+        return cls(message=label, type=ConsoleMessageType.ERROR)
 
     def to_json(self) -> dict:
-        """
-        Format::
-
-            {"message": "...", "type": "info"|"ok"|"warn"|"error"}
-        """
-        return {"message": self.message, "type": self.type.value}
+        return {
+            "message":   self.message,
+            "type":      self.type.value,
+            "timestamp": self.timestamp.strftime("%H:%M:%S"),
+        }
 
     def __repr__(self) -> str:
         return f"ConsoleMessage({self.message!r}, {self.type})"
