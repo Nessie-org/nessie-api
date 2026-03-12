@@ -26,9 +26,25 @@ class Workspace:
         return list(self._console_messages)
 
     def add_filter(self, operation: FilterExpression) -> None:
+        if operation in self._filters:
+            return
+
         self._undo_stack.append(self._filters.copy())
         self._redo_stack.clear()
         self._filters.append(operation)
+
+    def remove_filter(self, operation: FilterExpression) -> None:
+        if operation not in self._filters:
+            return
+
+        self._undo_stack.append(self._filters.copy())
+        self._redo_stack.clear()
+        self._filters.remove(operation)
+
+    def add_filters(self, operations: list[FilterExpression]) -> None:
+        self._undo_stack.append(self._filters.copy())
+        self._redo_stack.clear()
+        self._filters.extend(operations)
 
     def remove_last_filter(self) -> None:
         if self._filters:

@@ -124,3 +124,12 @@ class FilterExpression:
         return (
             f"FilterExpression({self.attr_name!r} {self.operator.value} {self.value!r})"
         )
+
+    def __eq__(self, other):
+        if not isinstance(other, FilterExpression):
+            return NotImplemented
+        return (
+            self.attr_name == other.attr_name and
+            self.operator == other.operator and
+            self.value == other.value
+        )
