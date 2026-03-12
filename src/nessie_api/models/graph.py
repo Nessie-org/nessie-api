@@ -231,7 +231,7 @@ class Graph:
     def _deserialize(value):
         try:
             return date.fromisoformat(value)
-        except TypeError | ValueError:
+        except (TypeError, ValueError):
             return value
 
     # ── Format ───────────────────
