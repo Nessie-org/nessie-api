@@ -151,8 +151,10 @@ class Context(Protocol):
 
     ################## ACTIONS ##################
 
-    def perform_action(self, action: "Action") -> Any:
+    def perform_action(self, action: "Action", plugin_name: str | None = None) -> Any:
         """
         Performs the given action in the shared environment.
+        If *plugin_name* is provided, the action is performed only by that plugin
+        (implicit intent), otherwise any plugin that supports the action can perform it (explicit intent).
         """
         ...
