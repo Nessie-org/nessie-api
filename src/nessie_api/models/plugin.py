@@ -1,5 +1,6 @@
 from typing import Any, Callable
-
+from nessie_api.protocols import Context
+from enum import StrEnum
 
 class NoAvailablePluginError(Exception):
     pass
@@ -10,9 +11,15 @@ class Action:
         self.name = name
         self.payload = payload
 
+type ActionHandler = Callable[[Action, Context], Any]
 
-ActionHandlerMap = dict[str, Callable[[Action], Any]]
+ActionHandlerMap = dict[str, ActionHandler]
 
+class SetupRequirementType(StrEnum):
+    STRING = "string"
+    NUMBER = "number"
+    BOOLEAN = "boolean"
+    FILE = "file"
 
 class Plugin:
     def __init__(
@@ -20,7 +27,7 @@ class Plugin:
         name: str,
         handlers: ActionHandlerMap,
         requires: list[str] = [],
-        setup_requires: dict[str, type] = {},
+        setup_requires: dict[str, SetupRequirementType] = {},
         verbose: bool = False,
     ):
         self.name = name
@@ -39,17 +46,13 @@ class Plugin:
     def provided_actions(self) -> list[str]:
         return list(self.handlers.keys())
 
-    def handle(self, action: Action, setup: dict[str, Any] = None) -> Any:
+    def handle(self, action: Action, context: Context) -> Any:
         handler = self.handlers.get(action.name)
         if handler:
             if self.verbose:
                 print(f"Handling action: {action.name} with plugin: {self.name}")
-            if setup:
-                if self.verbose:
-                    print(f"Using setup: {setup} for action: {action.name}")
-                return handler(action, setup)
-            else:
-                return handler(action)
+            
+            return handler(action, context)
 
 
 def plugin(name: str, verbose: bool = False) -> Any:
