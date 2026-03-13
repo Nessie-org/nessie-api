@@ -15,10 +15,11 @@ class Context(Protocol):
         """Total number of workspaces. Must be ≥ 1."""
         ...
 
-    def get_active_workspace_index(self) -> int:
+    def get_active_workspace_index(self) -> int | None:
         """
         Index of a currently open (and active) workspace.
         Must be within ``[0, get_workspace_count())``.
+        None if no workspace is active.
         """
         ...
 
@@ -126,6 +127,22 @@ class Context(Protocol):
         """
         ...
 
+    ################ SEARCH ##################
+
+    def get_search_at(self, index: int) -> str:
+        """
+        Returns the current search query for the graph at *index*.
+        Default: empty string.
+        """
+        return ""
+    
+    def set_search_at(self, index: int, query: str) -> None:
+        """
+        Sets the search query for the graph at *index* to *query*.
+        Must be within ``[0, get_workspace_count())``.
+        """
+        ...
+
     ################ CONSOLE ##################
 
     def get_console_messages_at(self, index: int) -> list:
@@ -153,7 +170,7 @@ class Context(Protocol):
 
     ################## ACTIONS ##################
 
-    def perform_action(self, action: "Action", plugin_name: str | None = None) -> Any:
+    def perform_action(self, action, plugin_name: str | None = None) -> Any:
         """
         Performs the given action in the shared environment.
         If *plugin_name* is provided, the action is performed only by that plugin
