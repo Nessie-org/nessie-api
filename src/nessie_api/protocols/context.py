@@ -1,5 +1,7 @@
 from typing import Any, Protocol
-from nessie_api.models import ConsoleMessage, Graph, Action, FilterExpression
+from nessie_api.models.console_message import ConsoleMessage
+from nessie_api.models.graph import Graph
+from nessie_api.models.filter import FilterExpression
 
 class Context(Protocol):
     """
