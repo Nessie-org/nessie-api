@@ -41,8 +41,6 @@ Homepage = "https://github.com/Nessie-org/nessie-api"
 Repository = "https://github.com/Nessie-org/nessie-api"
 Issues = "https://github.com/Nessie-org/nessie-api/issues"
 
-[project.entry-points.nessie_plugins]
-plugin_example = "demo_plugin:test_plugin_factory"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nessie_api"]

@@ -1,6 +1,8 @@
 from copy import deepcopy
 
-from nessie_api.models import ConsoleMessage, Graph, FilterExpression
+from nessie_api.models.console_message import ConsoleMessage
+from nessie_api.models.filter import FilterExpression
+from nessie_api.models.graph import Graph
 
 
 class Workspace:
