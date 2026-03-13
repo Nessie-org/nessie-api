@@ -13,6 +13,7 @@ class Workspace:
     def __init__(self, source_graph: Graph) -> None:
         self.source_graph = source_graph
         self.current_graph = deepcopy(source_graph)
+        self.search_query: str = ""
         self.visualiser_name: str | None = None
         self._filters: list[FilterExpression] = []
         self._console_messages: list[ConsoleMessage] = []
